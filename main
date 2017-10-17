@@ -1,0 +1,67 @@
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+
+// A reference to our box2d world
+Box2DProcessing box2d, wvapor;
+PImage mount,sun,cloud,lake;
+// A list for all particle systems
+ArrayList<ParticleSystem> systems; //Agua
+ArrayList<VaporSystem> vsystems; //Vapor 
+void setup() {
+  size(600,380);
+  smooth();
+  mount = loadImage("image/mount.png");
+  sun = loadImage("image/sun.png");
+  cloud = loadImage("image/cloud.png");
+  lake = loadImage("image/lake.png");
+  // Initialize box2d physics and create the world
+  box2d = new Box2DProcessing(this); //Box2D para agua
+  box2d.createWorld();
+  // We are setting a custom gravity
+  box2d.setGravity(0, -20);
+   // Initialize box2d physics and create the world
+  wvapor = new Box2DProcessing(this);
+  wvapor.createWorld();
+  // We are setting a custom gravity
+  wvapor.setGravity(0, 20);
+  // Create ArrayLists  
+  systems = new ArrayList<ParticleSystem>();
+  systems.add(new ParticleSystem(0, new PVector(90,70)));
+  systems.add(new ParticleSystem(0, new PVector(120,80)));
+  systems.add(new ParticleSystem(0, new PVector(150,90)));
+  systems.add(new ParticleSystem(0, new PVector(180,100)));
+  systems.add(new ParticleSystem(0, new PVector(210,100)));
+  systems.add(new ParticleSystem(0, new PVector(240,90)));
+  vsystems = new ArrayList<VaporSystem>();
+  vsystems.add(new VaporSystem(0, new PVector(590,350)));
+  vsystems.add(new VaporSystem(0, new PVector(540,350)));
+  vsystems.add(new VaporSystem(0, new PVector(500,350)));
+  vsystems.add(new VaporSystem(0, new PVector(460,350)));
+  vsystems.add(new VaporSystem(0, new PVector(420,350)));
+
+}
+
+void draw() {
+  background(184,234,240);
+  image(mount,0,120);
+  image(sun,440,0,150,150);
+  image(lake,0,350,600,40);
+  image(cloud,60,-5);
+  // We must always step through time!
+  box2d.step();
+  wvapor.step();
+  // Run all the particle systems
+  for (ParticleSystem system: systems) {
+    system.run();
+    int n = (int) random(0,12);
+    system.addParticles(n);
+  }
+  // Run all the particle systems
+  for (VaporSystem system: vsystems) {
+    system.run();
+    int n = (int) random(0,15);
+    system.addParticles(n);
+  }
+}
